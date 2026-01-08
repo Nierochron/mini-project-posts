@@ -715,34 +715,76 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"6kb64":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var _handlebars = require("handlebars");
 var _postHbs = require("../templates/post.hbs");
 var _postHbsDefault = parcelHelpers.interopDefault(_postHbs);
+const containerPosts = document.getElementById("postsContainer");
 const BASE_URL = "http://localhost:3000/posts";
 // Отримання списку постів
 async function getPosts() {
     try {
         const response = await fetch(BASE_URL);
-        console.log(response);
+        const data = await response.json();
+        return data;
     } catch (error) {
         console.error(error);
     }
 }
 // Створення нового поста
-async function createPost(title, content) {}
+async function createPost(event) {
+    event.preventDefault();
+    const title = event.target.titleInput.value;
+    const content = event.target.contentInput.value;
+    if (!title || !content) return;
+    try {
+        await fetch(BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                content
+            })
+        });
+        const posts = await getPosts();
+        renderPosts(posts);
+    } catch (error) {
+        console.error(error);
+    }
+}
 // Оновлення поста
 async function updatePost(id, title, content) {}
 // Видалення поста
-async function deletePost(id) {}
+async function deletePost(event) {
+    const button = event.target.closest('[data-action="delete"]');
+    if (!button) return;
+    const id = button?.dataset.id;
+    const confirmDelete = confirm("\u0412\u0438 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0456, \u0449\u043E \u0445\u043E\u0447\u0435\u0442\u0435 \u0432\u0438\u0434\u0430\u043B\u0438\u0442\u0438 \u0446\u0435\u0439 \u043A\u043E\u043C\u0435\u043D\u0442\u0430\u0440?");
+    if (!confirmDelete) return;
+    try {
+        await fetch(`${BASE_URL}/${id}`, {
+            method: 'DELETE'
+        });
+        const posts = await getPosts();
+        renderPosts(posts);
+    } catch (error) {
+        console.error(error);
+    }
+}
 // Додавання коментаря до поста
 async function createComment(postId, comment) {}
 // Оновлення відображення постів на сторінці
-function renderPosts(posts) {}
+function renderPosts(posts) {
+    const markup = (0, _postHbsDefault.default)(posts);
+    containerPosts.innerHTML = markup;
+}
 // Обробник події для створення поста
-//  document.getElementById("createPostForm").addEventListener("submit", cb);
+document.getElementById("createPostForm").addEventListener("submit", createPost);
 // Обробник події для редагування поста
 //  document.addEventListener("click", cb);
 // Обробник події для видалення поста
-//  document.addEventListener("click", cb);
+document.addEventListener("click", deletePost);
 // Обробник події для додавання коментаря
 //  document.addEventListener("submit", cb);
 // Запуск додатку
@@ -750,51 +792,154 @@ async function startApp() {
     const posts = await getPosts();
     renderPosts(posts);
 }
-// startApp();
-getPosts();
+startApp();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../templates/post.hbs":"ljsB8"}],"jnFvT":[function(require,module,exports,__globalThis) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"ljsB8":[function(require,module,exports,__globalThis) {
+},{"../templates/post.hbs":"ljsB8","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","handlebars":"9pFby"}],"ljsB8":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
 const templateFunction = (0, _handlebarsDefault.default).template({
+    "1": function(container, depth0, helpers, partials, data) {
+        var stack1, helper, alias1 = depth0 != null ? depth0 : container.nullContext || {}, alias2 = container.hooks.helperMissing, alias3 = "function", alias4 = container.escapeExpression, lookupProperty = container.lookupProperty || function(parent, propertyName) {
+            if (Object.prototype.hasOwnProperty.call(parent, propertyName)) return parent[propertyName];
+            return undefined;
+        };
+        return "<div class=\"post\">\r\n\r\n  <h2>" + alias4((helper = (helper = lookupProperty(helpers, "title") || (depth0 != null ? lookupProperty(depth0, "title") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
+            "name": "title",
+            "hash": {},
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 4,
+                    "column": 6
+                },
+                "end": {
+                    "line": 4,
+                    "column": 15
+                }
+            }
+        }) : helper)) + "</h2>\r\n\r\n  <p>" + alias4((helper = (helper = lookupProperty(helpers, "content") || (depth0 != null ? lookupProperty(depth0, "content") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
+            "name": "content",
+            "hash": {},
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 6,
+                    "column": 5
+                },
+                "end": {
+                    "line": 6,
+                    "column": 16
+                }
+            }
+        }) : helper)) + "</p>\r\n\r\n  <button class=\"editPostButton\" data-id=\"" + alias4((helper = (helper = lookupProperty(helpers, "id") || (depth0 != null ? lookupProperty(depth0, "id") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
+            "name": "id",
+            "hash": {},
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 8,
+                    "column": 42
+                },
+                "end": {
+                    "line": 8,
+                    "column": 48
+                }
+            }
+        }) : helper)) + '" data-action="update">\u0420\u0435\u0434\u0430\u0433\u0443\u0432\u0430\u0442\u0438</button>\r\n\r\n  <button class="deletePostButton" data-id="' + alias4((helper = (helper = lookupProperty(helpers, "id") || (depth0 != null ? lookupProperty(depth0, "id") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
+            "name": "id",
+            "hash": {},
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 10,
+                    "column": 44
+                },
+                "end": {
+                    "line": 10,
+                    "column": 50
+                }
+            }
+        }) : helper)) + '" data-action="delete">\u0412\u0438\u0434\u0430\u043B\u0438\u0442\u0438</button>\r\n\r\n  <div class="commentsContainer" data-id="' + alias4((helper = (helper = lookupProperty(helpers, "id") || (depth0 != null ? lookupProperty(depth0, "id") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
+            "name": "id",
+            "hash": {},
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 12,
+                    "column": 42
+                },
+                "end": {
+                    "line": 12,
+                    "column": 48
+                }
+            }
+        }) : helper)) + '">\r\n\r\n    <h3>\u041A\u043E\u043C\u0435\u043D\u0442\u0430\u0440\u0456:</h3>\r\n\r\n    <ul>\r\n' + ((stack1 = lookupProperty(helpers, "each").call(alias1, depth0 != null ? lookupProperty(depth0, "comments") : depth0, {
+            "name": "each",
+            "hash": {},
+            "fn": container.program(2, data, 0),
+            "inverse": container.noop,
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 17,
+                    "column": 4
+                },
+                "end": {
+                    "line": 19,
+                    "column": 13
+                }
+            }
+        })) != null ? stack1 : "") + '    </ul>\r\n\r\n    <form class="createCommentForm">\r\n\r\n      <input type="text" class="commentInput" placeholder="\u041D\u043E\u0432\u0438\u0439 \u043A\u043E\u043C\u0435\u043D\u0442\u0430\u0440" required />\r\n\r\n      <button type="submit">\u0414\u043E\u0434\u0430\u0442\u0438 \u043A\u043E\u043C\u0435\u043D\u0442\u0430\u0440</button>\r\n\r\n    </form>\r\n\r\n  </div>\r\n\r\n</div>\r\n';
+    },
+    "2": function(container, depth0, helpers, partials, data) {
+        var helper, lookupProperty = container.lookupProperty || function(parent, propertyName) {
+            if (Object.prototype.hasOwnProperty.call(parent, propertyName)) return parent[propertyName];
+            return undefined;
+        };
+        return "      <li>" + container.escapeExpression((helper = (helper = lookupProperty(helpers, "body") || (depth0 != null ? lookupProperty(depth0, "body") : depth0)) != null ? helper : container.hooks.helperMissing, typeof helper === "function" ? helper.call(depth0 != null ? depth0 : container.nullContext || {}, {
+            "name": "body",
+            "hash": {},
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 18,
+                    "column": 10
+                },
+                "end": {
+                    "line": 18,
+                    "column": 18
+                }
+            }
+        }) : helper)) + "</li>\r\n";
+    },
     "compiler": [
         8,
         ">= 4.3.0"
     ],
     "main": function(container, depth0, helpers, partials, data) {
-        return '<div class="post">\r\n\r\n  <h2></h2>\r\n\r\n  <p></p>\r\n\r\n  <button class="editPostButton" data-id="">\u0420\u0435\u0434\u0430\u0433\u0443\u0432\u0430\u0442\u0438</button>\r\n\r\n  <button class="deletePostButton" data-id="">\u0412\u0438\u0434\u0430\u043B\u0438\u0442\u0438</button>\r\n\r\n  <div class="commentsContainer" data-id="">\r\n\r\n    <h3>\u041A\u043E\u043C\u0435\u043D\u0442\u0430\u0440\u0456:</h3>\r\n\r\n    <ul>\r\n\r\n      <li></li>\r\n\r\n    </ul>\r\n\r\n    <form class="createCommentForm">\r\n\r\n      <input type="text" class="commentInput" placeholder="\u041D\u043E\u0432\u0438\u0439 \u043A\u043E\u043C\u0435\u043D\u0442\u0430\u0440" required />\r\n\r\n      <button type="submit">\u0414\u043E\u0434\u0430\u0442\u0438 \u043A\u043E\u043C\u0435\u043D\u0442\u0430\u0440</button>\r\n\r\n    </form>\r\n\r\n  </div>\r\n\r\n</div>';
+        var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
+            if (Object.prototype.hasOwnProperty.call(parent, propertyName)) return parent[propertyName];
+            return undefined;
+        };
+        return (stack1 = lookupProperty(helpers, "each").call(depth0 != null ? depth0 : container.nullContext || {}, depth0, {
+            "name": "each",
+            "hash": {},
+            "fn": container.program(1, data, 0),
+            "inverse": container.noop,
+            "data": data,
+            "loc": {
+                "start": {
+                    "line": 1,
+                    "column": 0
+                },
+                "end": {
+                    "line": 33,
+                    "column": 9
+                }
+            }
+        })) != null ? stack1 : "";
     },
     "useData": true
 });
@@ -11972,6 +12117,36 @@ var isSourceNode = "$$$isSourceNode$$$";
 };
 exports.SourceNode = SourceNode;
 
-},{"a07d2c2c4b11c39f":"fWPsq","18d5ff036a08fa06":"5Iq0C"}]},["6DHTQ","6kb64"], "6kb64", "parcelRequire656e", {})
+},{"a07d2c2c4b11c39f":"fWPsq","18d5ff036a08fa06":"5Iq0C"}],"jnFvT":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}]},["6DHTQ","6kb64"], "6kb64", "parcelRequire656e", {})
 
 //# sourceMappingURL=mini-project-posts.6528c13b.js.map

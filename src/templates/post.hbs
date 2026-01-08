@@ -1,21 +1,22 @@
+{{#each this}}
 <div class="post">
 
-  <h2></h2>
+  <h2>{{title}}</h2>
 
-  <p></p>
+  <p>{{content}}</p>
 
-  <button class="editPostButton" data-id="">Редагувати</button>
+  <button class="editPostButton" data-id="{{id}}" data-action="update">Редагувати</button>
 
-  <button class="deletePostButton" data-id="">Видалити</button>
+  <button class="deletePostButton" data-id="{{id}}" data-action="delete">Видалити</button>
 
-  <div class="commentsContainer" data-id="">
+  <div class="commentsContainer" data-id="{{id}}">
 
     <h3>Коментарі:</h3>
 
     <ul>
-
-      <li></li>
-
+    {{#each comments}}
+      <li>{{body}}</li>
+    {{/each}}
     </ul>
 
     <form class="createCommentForm">
@@ -29,3 +30,4 @@
   </div>
 
 </div>
+{{/each}}
